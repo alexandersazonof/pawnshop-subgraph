@@ -1,0 +1,47 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: undefined
+    network: matic
+    source:
+      address: "0xde9aeb389a74b32a66d960b38c1b453a4ff4bdc0"
+      abi: PawnShopContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - AuctionBidAccepted
+        - AuctionBidClosed
+        - AuctionBidOpened
+        - BidExecuted
+        - PositionClaimed
+        - PositionClosed
+        - PositionOpened
+        - PositionRedeemed
+        - UpdateController
+      abis:
+        - name: PawnShopContract
+          file: ./abis/PawnShopContract.json
+      eventHandlers:
+        - event: AuctionBidAccepted(uint256,uint256)
+          handler: handleAuctionBidAccepted
+        - event: AuctionBidClosed(uint256,uint256)
+          handler: handleAuctionBidClosed
+        - event: AuctionBidOpened(uint256,uint256)
+          handler: handleAuctionBidOpened
+        - event: BidExecuted(uint256,address,uint256)
+          handler: handleBidExecuted
+        - event: PositionClaimed(uint256)
+          handler: handlePositionClaimed
+        - event: PositionClosed(uint256)
+          handler: handlePositionClosed
+        - event: PositionOpened(uint256)
+          handler: handlePositionOpened
+        - event: PositionRedeemed(uint256)
+          handler: handlePositionRedeemed
+        - event: UpdateController(address,address)
+          handler: handleUpdateController
+      file: ./src/pawn-shop-contract.ts

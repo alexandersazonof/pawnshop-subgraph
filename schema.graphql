@@ -1,0 +1,6 @@
+type ExampleEntity @entity {
+  id: ID!
+  count: BigInt!
+  posId: BigInt! # uint256
+  bidId: BigInt! # uint256
+}
