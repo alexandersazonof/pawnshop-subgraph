@@ -9,8 +9,8 @@ import { getPosition } from '../utils/pawn-shop.contract';
 import { loadOrCreateToken } from './token';
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
 
-export function loadOrCreatePosition(posId: number, block: ethereum.Block): PositionEntity | null {
-  const id = `${posId}`;
+export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
+  const id = `${posId.toString()}`;
   let position = PositionEntity.load(id)
   if (!position) {
     const positionResult = getPosition(BigInt.fromString(id));

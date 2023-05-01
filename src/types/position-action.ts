@@ -8,7 +8,7 @@ export function loadOrCreatePositionAction(posId: string, action: string, block:
     positionAction = new PositionActionEntity(id);
 
     positionAction.action = action;
-
+    positionAction.position = posId;
     positionAction.createAtBlock = block.number
     positionAction.timestamp = block.timestamp
 
