@@ -1,6 +1,77 @@
-type ExampleEntity @entity {
+type PositionEntity @entity {
+  # posId
   id: ID!
-  count: BigInt!
-  posId: BigInt! # uint256
-  bidId: BigInt! # uint256
+
+  borrower: String!
+  depositToken: TokenEntity!
+  open: Boolean!
+  info: PositionInfoEntity
+  collateral: PositionCollateralEntity
+  acquired: PositionAcquiredEntity
+  execution: PositionExecutionEntity
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type PositionInfoEntity @entity {
+  id: ID!
+
+  posDurationBlocks: BigInt!
+  posFee: BigInt!
+  createdBlock: BigInt!
+  createdTs: BigInt!
+}
+
+type PositionCollateralEntity @entity {
+  id: ID!
+
+  collateralToken: TokenEntity!
+  collateralType: Int!
+  collateralAmount: BigInt!
+  collateralTokenId: BigInt!
+}
+
+type PositionAcquiredEntity @entity {
+  id: ID!
+
+  acquiredToken: String!
+  acquiredAmount: BigInt!
+}
+
+type PositionExecutionEntity @entity {
+  id: ID!
+
+  lender: String!
+  posStartBlock: BigInt!
+  posStartTs: BigInt!
+  posEndTs: BigInt!
+}
+
+type PositionActionEntity @entity {
+  id: ID!
+
+  position: PositionEntity!
+  action: ActionType!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TokenEntity @entity {
+  id: ID!
+
+  decimals: Int!
+  name: String!
+}
+
+enum ActionType {
+  OPEN_POSITION,
+  CLAIM_POSITION,
+  CLOSE_POSITION,
+  REDEEM_POSITION,
+  BID_ACCEPT,
+  BID_CLOSE,
+  BID_OPEN,
+  BID_EXECUTE,
 }

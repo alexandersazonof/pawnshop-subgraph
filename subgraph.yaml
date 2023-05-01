@@ -26,6 +26,8 @@ dataSources:
       abis:
         - name: PawnShopContract
           file: ./abis/PawnShopContract.json
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
       eventHandlers:
         - event: AuctionBidAccepted(uint256,uint256)
           handler: handleAuctionBidAccepted
@@ -45,4 +47,4 @@ dataSources:
           handler: handlePositionRedeemed
         - event: UpdateController(address,address)
           handler: handleUpdateController
-      file: ./src/pawn-shop-contract.ts
+      file: ./src/pawn-shop.listener.ts
