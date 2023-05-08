@@ -29,13 +29,13 @@ type PositionCollateralEntity @entity {
   collateralToken: TokenEntity!
   collateralType: Int!
   collateralAmount: BigInt!
-  collateralTokenId: BigInt!
+  tokenId: BigInt!
 }
 
 type PositionAcquiredEntity @entity {
   id: ID!
 
-  acquiredToken: String!
+  acquiredToken: TokenEntity!
   acquiredAmount: BigInt!
 }
 
@@ -61,8 +61,12 @@ type PositionActionEntity @entity {
 type TokenEntity @entity {
   id: ID!
 
+  symbol: String!
   decimals: Int!
   name: String!
+  isErc721: Boolean!
+  tokenUri: String
+  contractAddress: String
 }
 
 enum ActionType {

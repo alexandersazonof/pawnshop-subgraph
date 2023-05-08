@@ -28,6 +28,8 @@ dataSources:
           file: ./abis/PawnShopContract.json
         - name: ERC20
           file: ./abis/ERC20Contract.json
+        - name: ERC721
+          file: ./abis/ERC721Contract.json
       eventHandlers:
         - event: AuctionBidAccepted(uint256,uint256)
           handler: handleAuctionBidAccepted

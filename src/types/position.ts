@@ -6,7 +6,7 @@ import {
 } from '../../generated/schema';
 import { BigInt, ethereum, log } from '@graphprotocol/graph-ts';
 import { getPosition } from '../utils/pawn-shop.contract';
-import { loadOrCreateToken } from './token';
+import { loadOrCreateErc721Token, loadOrCreateErc20Token } from './token';
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
@@ -19,7 +19,7 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
       position = new PositionEntity(id);
 
       position.borrower = positionResult.borrower.toHex()
-      position.depositToken = loadOrCreateToken(positionResult.depositToken).id
+      position.depositToken = loadOrCreateErc20Token(positionResult.depositToken).id
 
       position.open = positionResult.open
 
@@ -56,11 +56,15 @@ export function toPositionInfo(posId: string, position: PawnShopContract__getPos
 export function toPositionCollateral(posId: string, position: PawnShopContract__getPositionResultValue0Struct): PositionCollateralEntity {
   let collateral = PositionCollateralEntity.load(posId);
   if (!collateral) {
+    const token = position.collateral.collateralType == 1
+      ? loadOrCreateErc721Token(position.collateral.collateralToken, position.collateral.collateralTokenId).id
+      : loadOrCreateErc20Token(position.collateral.collateralToken).id;
+
     collateral = new PositionCollateralEntity(posId);
-    collateral.collateralToken = position.collateral.collateralToken.toHex();
+    collateral.collateralToken = token
     collateral.collateralType = position.collateral.collateralType;
     collateral.collateralAmount = position.collateral.collateralAmount;
-    collateral.collateralTokenId = position.collateral.collateralTokenId;
+    collateral.tokenId = position.collateral.collateralTokenId;
 
     collateral.save();
   }
@@ -71,7 +75,7 @@ export function toPositionAcquiredEntity(posId: string, position: PawnShopContra
   let acquired = PositionAcquiredEntity.load(posId);
   if (!acquired) {
     acquired = new PositionAcquiredEntity(posId);
-    acquired.acquiredToken = position.acquired.acquiredToken.toHex();
+    acquired.acquiredToken = loadOrCreateErc20Token(position.acquired.acquiredToken).id;
     acquired.acquiredAmount = position.acquired.acquiredAmount;
 
     acquired.save();

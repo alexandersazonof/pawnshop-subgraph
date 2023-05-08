@@ -13,3 +13,9 @@ export function fetchName(address: Address): string {
   const tryName = erc20.try_name();
   return tryName.reverted ? DEFAULT_VALUE : tryName.value
 }
+
+export function fetchSymbol(address: Address): string {
+  const erc20 = ERC20.bind(address);
+  const trySymbol = erc20.try_symbol();
+  return trySymbol.reverted ? DEFAULT_VALUE : trySymbol.value
+}
