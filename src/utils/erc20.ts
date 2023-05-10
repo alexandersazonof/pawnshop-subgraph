@@ -19,3 +19,9 @@ export function fetchSymbol(address: Address): string {
   const trySymbol = erc20.try_symbol();
   return trySymbol.reverted ? DEFAULT_VALUE : trySymbol.value
 }
+
+export function fetchTotalSupply(address: Address): BigInt {
+  const erc20 = ERC20.bind(address);
+  const tryTotalSupply = erc20.try_totalSupply();
+  return tryTotalSupply.reverted ? BigInt.zero() : tryTotalSupply.value
+}

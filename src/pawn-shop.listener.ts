@@ -20,6 +20,15 @@ export function handlePositionOpened(event: PositionOpened): void {
   }
 }
 
+export function handlePositionClosed(event: PositionClosed): void {
+  const position = loadOrCreatePosition(event.params.posId, event.block);
+  if (position) {
+    loadOrCreatePositionAction(position.id, 'CLOSE_POSITION', event.block, event.transaction);
+    position.open = false;
+    position.save();
+  }
+}
+
 export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
@@ -52,13 +61,6 @@ export function handlePositionClaimed(event: PositionClaimed): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'CLAIM_POSITION', event.block, event.transaction);
-  }
-}
-
-export function handlePositionClosed(event: PositionClosed): void {
-  const position = loadOrCreatePosition(event.params.posId, event.block);
-  if (position) {
-    loadOrCreatePositionAction(position.id, 'CLOSE_POSITION', event.block, event.transaction);
   }
 }
 

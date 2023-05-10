@@ -67,6 +67,7 @@ type TokenEntity @entity {
   isErc721: Boolean!
   tokenUri: String
   contractAddress: String
+  totalSupply: BigInt
 }
 
 enum ActionType {

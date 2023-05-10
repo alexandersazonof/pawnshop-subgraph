@@ -1,7 +1,7 @@
 import { TokenEntity } from '../../generated/schema';
-import { fetchDecimals, fetchName, fetchSymbol } from '../utils/erc20';
+import { fetchDecimals, fetchName, fetchSymbol, fetchTotalSupply } from '../utils/erc20';
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { DEFAULT_DECIMALS, DEFAULT_DECIMALS_NUM } from '../utils/constant';
+import { DEFAULT_DECIMALS_NUM } from '../utils/constant';
 import { fetchTokenUri } from '../utils/erc721';
 
 export function loadOrCreateErc20Token(address: Address): TokenEntity {
@@ -11,6 +11,7 @@ export function loadOrCreateErc20Token(address: Address): TokenEntity {
     token.decimals = fetchDecimals(address).toI32();
     token.name = fetchName(address);
     token.symbol = fetchSymbol(address);
+    token.totalSupply = fetchTotalSupply(address);
     token.isErc721 = false;
     token.save()
   }
