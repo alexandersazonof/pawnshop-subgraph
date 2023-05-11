@@ -28,6 +28,7 @@ export function loadOrCreateErc721Token(address: Address, tokenId: BigInt): Toke
     token.symbol = fetchSymbol(address);
     token.tokenUri = fetchTokenUri(address, tokenId)
     token.isErc721 = true;
+    token.tokenId = tokenId;
     token.contractAddress = address.toHex()
     token.save()
   }

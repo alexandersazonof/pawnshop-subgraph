@@ -12,6 +12,8 @@ import {
 import { loadOrCreatePosition } from './types/position';
 import { loadOrCreatePositionAction } from './types/position-action';
 import { ActionType } from './utils/constant';
+import { loadOrCreateBid } from './types/bid';
+import { loadOrCreateBidAction } from './types/bid-action';
 
 export function handlePositionOpened(event: PositionOpened): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
@@ -29,10 +31,27 @@ export function handlePositionClosed(event: PositionClosed): void {
   }
 }
 
+export function handleAuctionBidOpened(event: AuctionBidOpened): void {
+  const position = loadOrCreatePosition(event.params.posId, event.block);
+  if (position) {
+    loadOrCreatePositionAction(position.id, 'BID_OPEN', event.block, event.transaction);
+    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    if (bid) {
+      const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
+    }
+  }
+}
+
 export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_ACCEPT', event.block, event.transaction);
+    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    if (bid) {
+      const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
+      bidAction.action = 'BID_ACCEPT';
+      bidAction.save();
+    }
   }
 }
 
@@ -40,16 +59,17 @@ export function handleAuctionBidClosed(event: AuctionBidClosed): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_CLOSE', event.block, event.transaction);
+    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    if (bid) {
+      bid.open = false;
+      bid.save();
+      const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
+      bidAction.action = 'BID_CLOSE';
+      bidAction.save();
+    }
   }
 }
-
-export function handleAuctionBidOpened(event: AuctionBidOpened): void {
-  const position = loadOrCreatePosition(event.params.posId, event.block);
-  if (position) {
-    loadOrCreatePositionAction(position.id, 'BID_OPEN', event.block, event.transaction);
-  }
-}
-
+// EXECUTE SALE
 export function handleBidExecuted(event: BidExecuted): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {

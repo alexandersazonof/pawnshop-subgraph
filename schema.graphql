@@ -10,6 +10,8 @@ type PositionEntity @entity {
   acquired: PositionAcquiredEntity
   execution: PositionExecutionEntity
 
+  type: PositionType!
+
   timestamp: BigInt!
   createAtBlock: BigInt!
 }
@@ -68,6 +70,29 @@ type TokenEntity @entity {
   tokenUri: String
   contractAddress: String
   totalSupply: BigInt
+  tokenId: BigInt
+}
+
+type BidEntity @entity {
+  id: ID!
+
+  position: PositionEntity!
+  lender: String!
+  amount: BigInt!
+  open: Boolean!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type BidActionEntity @entity {
+  id: ID!
+
+  bid: BidEntity!
+  action: ActionType!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
 }
 
 enum ActionType {
@@ -79,4 +104,11 @@ enum ActionType {
   BID_CLOSE,
   BID_OPEN,
   BID_EXECUTE,
+}
+
+enum PositionType {
+  Sale,
+  Auction,
+  Loan,
+  LoanAuction
 }

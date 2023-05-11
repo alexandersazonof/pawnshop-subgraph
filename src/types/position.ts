@@ -28,6 +28,8 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
       position.acquired = toPositionAcquiredEntity(id, positionResult).id;
       position.execution = toPositionExecutionEntity(id, positionResult).id;
 
+      position.type = toPositionType(positionResult);
+
       position.createAtBlock = block.number;
       position.timestamp = block.timestamp;
       position.save();
@@ -95,4 +97,12 @@ export function toPositionExecutionEntity(posId: string, position: PawnShopContr
     execution.save();
   }
   return execution;
+}
+
+export function toPositionType(position: PawnShopContract__getPositionResultValue0Struct): string {
+  if (!position.info.posDurationBlocks.isZero() && position.acquired.acquiredAmount.isZero()) {
+    return 'Auction';
+  }
+
+  return 'Sale';
 }
