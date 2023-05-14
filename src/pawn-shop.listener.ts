@@ -79,6 +79,9 @@ export function handleBidExecuted(event: BidExecuted): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_EXECUTE', event.block, event.transaction);
+    // TODO add more logic
+    position.open = false;
+    position.save();
   }
 }
 
