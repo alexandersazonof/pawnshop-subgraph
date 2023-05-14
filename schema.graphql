@@ -1,9 +1,19 @@
+type PawnshopEntity @entity {
+  id: ID!
+  feeRecipient: String!
+  platformFee: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
 type PositionEntity @entity {
   # posId
   id: ID!
 
   borrower: String!
   depositToken: TokenEntity!
+  minAuctionAmount: BigInt!
   open: Boolean!
   info: PositionInfoEntity
   collateral: PositionCollateralEntity

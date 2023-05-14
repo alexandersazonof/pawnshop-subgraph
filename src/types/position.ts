@@ -13,12 +13,12 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
   const id = `${posId.toString()}`;
   let position = PositionEntity.load(id)
   if (!position) {
-    const positionResult = getPosition(BigInt.fromString(id));
-
-    if (positionResult) {
+    const positionResult = getPosition(posId);
+    if (positionResult != null) {
       position = new PositionEntity(id);
 
       position.borrower = positionResult.borrower.toHex()
+      position.minAuctionAmount = positionResult.minAuctionAmount
       position.depositToken = loadOrCreateErc20Token(positionResult.depositToken).id
 
       position.open = positionResult.open
@@ -100,9 +100,13 @@ export function toPositionExecutionEntity(posId: string, position: PawnShopContr
 }
 
 export function toPositionType(position: PawnShopContract__getPositionResultValue0Struct): string {
-  if (!position.info.posDurationBlocks.isZero() && position.acquired.acquiredAmount.isZero()) {
+  if (position.info.posDurationBlocks.isZero() && position.minAuctionAmount.gt(BigInt.zero())) {
     return 'Auction';
+  } else if (position.info.posDurationBlocks.isZero() && position.minAuctionAmount.isZero()) {
+    return 'Sale';
+  } else if (position.info.posDurationBlocks.gt(BigInt.zero()) && position.minAuctionAmount.gt(BigInt.zero())) {
+    return 'LoanAuction';
   }
 
-  return 'Sale';
+  return 'Loan';
 }

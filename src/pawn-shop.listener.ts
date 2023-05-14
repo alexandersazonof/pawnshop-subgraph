@@ -7,15 +7,15 @@ import {
   PositionClosed,
   PositionOpened,
   PositionRedeemed,
-  UpdateController
 } from "../generated/PawnShopContract/PawnShopContract"
 import { loadOrCreatePosition } from './types/position';
 import { loadOrCreatePositionAction } from './types/position-action';
-import { ActionType } from './utils/constant';
 import { loadOrCreateBid } from './types/bid';
 import { loadOrCreateBidAction } from './types/bid-action';
+import { loadOrCreatePawnshop } from './types/pawnshop';
 
 export function handlePositionOpened(event: PositionOpened): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'OPEN_POSITION', event.block, event.transaction);
@@ -23,6 +23,7 @@ export function handlePositionOpened(event: PositionOpened): void {
 }
 
 export function handlePositionClosed(event: PositionClosed): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'CLOSE_POSITION', event.block, event.transaction);
@@ -32,6 +33,7 @@ export function handlePositionClosed(event: PositionClosed): void {
 }
 
 export function handleAuctionBidOpened(event: AuctionBidOpened): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_OPEN', event.block, event.transaction);
@@ -43,6 +45,7 @@ export function handleAuctionBidOpened(event: AuctionBidOpened): void {
 }
 
 export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_ACCEPT', event.block, event.transaction);
@@ -56,6 +59,7 @@ export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
 }
 
 export function handleAuctionBidClosed(event: AuctionBidClosed): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_CLOSE', event.block, event.transaction);
@@ -71,6 +75,7 @@ export function handleAuctionBidClosed(event: AuctionBidClosed): void {
 }
 // EXECUTE SALE
 export function handleBidExecuted(event: BidExecuted): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'BID_EXECUTE', event.block, event.transaction);
@@ -78,6 +83,7 @@ export function handleBidExecuted(event: BidExecuted): void {
 }
 
 export function handlePositionClaimed(event: PositionClaimed): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'CLAIM_POSITION', event.block, event.transaction);
@@ -85,10 +91,9 @@ export function handlePositionClaimed(event: PositionClaimed): void {
 }
 
 export function handlePositionRedeemed(event: PositionRedeemed): void {
+  loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position.id, 'REDEEM_POSITION', event.block, event.transaction);
   }
 }
-
-export function handleUpdateController(event: UpdateController): void {}

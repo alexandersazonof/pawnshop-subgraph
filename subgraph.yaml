@@ -6,9 +6,9 @@ dataSources:
     name: PawnShopContract
     network: matic
     source:
-      address: "0xde9aeb389a74b32a66d960b38c1b453a4ff4bdc0"
+      address: "0xdeabad6cf2ffc7357651d0c52739536e89870532"
       abi: PawnShopContract
-      startBlock: 19581634
+      startBlock: 42660968
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -31,22 +31,20 @@ dataSources:
         - name: ERC721
           file: ./abis/ERC721Contract.json
       eventHandlers:
-        - event: AuctionBidAccepted(uint256,uint256)
+        - event: AuctionBidAccepted(indexed address,uint256,uint256)
           handler: handleAuctionBidAccepted
         - event: AuctionBidClosed(uint256,uint256)
           handler: handleAuctionBidClosed
-        - event: AuctionBidOpened(uint256,uint256)
+        - event: AuctionBidOpened(uint256,uint256,uint256,address)
           handler: handleAuctionBidOpened
-        - event: BidExecuted(uint256,address,uint256)
+        - event: BidExecuted(uint256,uint256,uint256,address,address)
           handler: handleBidExecuted
-        - event: PositionClaimed(uint256)
+        - event: PositionClaimed(indexed address,uint256)
           handler: handlePositionClaimed
-        - event: PositionClosed(uint256)
+        - event: PositionClosed(indexed address,uint256)
           handler: handlePositionClosed
-        - event: PositionOpened(uint256)
+        - event: PositionOpened(indexed address,uint256,address,uint256,uint256,address,uint256,uint256,uint256)
           handler: handlePositionOpened
-        - event: PositionRedeemed(uint256)
+        - event: PositionRedeemed(indexed address,uint256)
           handler: handlePositionRedeemed
-        - event: UpdateController(address,address)
-          handler: handleUpdateController
       file: ./src/pawn-shop.listener.ts
