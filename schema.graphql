@@ -122,3 +122,29 @@ enum PositionType {
   Loan,
   LoanAuction
 }
+
+type FeeEarnedEntity @entity {
+  id: ID!
+
+  value: BigInt!
+}
+
+type FeeEarnedHistoryEntity @entity {
+  id: ID!
+
+  position: PositionEntity!
+  feeAmount: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type PlaftformFeeHistoryEntity @entity {
+  id: ID!
+
+  newFee: BigInt!
+  oldFee: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}

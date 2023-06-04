@@ -47,4 +47,6 @@ dataSources:
           handler: handlePositionOpened
         - event: PositionRedeemed(indexed address,uint256)
           handler: handlePositionRedeemed
+        - event: PlatformFeeChanged(uint256,uint256)
+          handler: handlePlatformFeeChanged
       file: ./src/pawn-shop.listener.ts
