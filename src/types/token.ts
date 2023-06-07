@@ -1,8 +1,9 @@
 import { TokenEntity } from '../../generated/schema';
 import { fetchDecimals, fetchName, fetchSymbol, fetchTotalSupply } from '../utils/erc20';
-import { Address, BigInt } from '@graphprotocol/graph-ts';
-import { DEFAULT_DECIMALS_NUM } from '../utils/constant';
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { BD_18, DEFAULT_DECIMALS_NUM } from '../utils/constant';
 import { fetchTokenUri } from '../utils/erc721';
+import { getPrice } from '../utils/price-utils';
 
 export function loadOrCreateErc20Token(address: Address): TokenEntity {
   let token = TokenEntity.load(address.toHex());
@@ -13,6 +14,7 @@ export function loadOrCreateErc20Token(address: Address): TokenEntity {
     token.symbol = fetchSymbol(address);
     token.totalSupply = fetchTotalSupply(address);
     token.isErc721 = false;
+    token.price = BigDecimal.zero();
     token.save()
   }
   return token;
@@ -30,7 +32,17 @@ export function loadOrCreateErc721Token(address: Address, tokenId: BigInt): Toke
     token.isErc721 = true;
     token.tokenId = tokenId;
     token.contractAddress = address.toHex()
+    token.price = BigDecimal.zero();
     token.save()
   }
   return token;
+}
+
+export function updateTokenPrice(address: Address): void {
+  const token = loadOrCreateErc20Token(address);
+  const price = getPrice(address);
+  if (!price.isZero()) {
+    token.price = price.divDecimal(BD_18);
+    token.save();
+  }
 }

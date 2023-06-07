@@ -30,6 +30,8 @@ dataSources:
           file: ./abis/ERC20Contract.json
         - name: ERC721
           file: ./abis/ERC721Contract.json
+        - name: PriceCalculator
+          file: ./abis/PriceCalculator.json
       eventHandlers:
         - event: AuctionBidAccepted(indexed address,uint256,uint256)
           handler: handleAuctionBidAccepted

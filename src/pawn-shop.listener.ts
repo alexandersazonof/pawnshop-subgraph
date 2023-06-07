@@ -8,7 +8,7 @@ import {
   PositionOpened,
   PositionRedeemed,
 } from '../generated/PawnShopContract/PawnShopContract';
-import { loadOrCreatePosition, toPositionExecutionEntity } from './types/position';
+import { loadOrCreatePosition, toPositionExecutionEntity, updatePositionPrice } from './types/position';
 import { loadOrCreatePositionAction } from './types/position-action';
 import { loadOrCreateBid } from './types/bid';
 import { loadOrCreateBidAction } from './types/bid-action';
@@ -32,6 +32,7 @@ export function handlePositionClosed(event: PositionClosed): void {
     loadOrCreatePositionAction(position.id, 'CLOSE_POSITION', event.block, event.transaction);
     position.open = false;
     position.save();
+    updatePositionPrice(position);
   }
 }
 
@@ -44,6 +45,7 @@ export function handleAuctionBidOpened(event: AuctionBidOpened): void {
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
     }
+    updatePositionPrice(position);
   }
 }
 
@@ -60,6 +62,7 @@ export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
       bidAction.action = 'BID_ACCEPT';
       bidAction.save();
     }
+    updatePositionPrice(position);
   }
 }
 
@@ -76,6 +79,7 @@ export function handleAuctionBidClosed(event: AuctionBidClosed): void {
       bidAction.action = 'BID_CLOSE';
       bidAction.save();
     }
+    updatePositionPrice(position);
   }
 }
 
@@ -106,6 +110,7 @@ export function handleBidExecuted(event: BidExecuted): void {
         execution.save();
       }
     }
+    updatePositionPrice(position);
   }
 }
 
@@ -121,6 +126,7 @@ export function handlePositionClaimed(event: PositionClaimed): void {
       execution.posEndTs = event.block.timestamp;
       execution.save();
     }
+    updatePositionPrice(position);
   }
 }
 
@@ -136,6 +142,7 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
       execution.posEndTs = event.block.timestamp;
       execution.save();
     }
+    updatePositionPrice(position);
   }
 }
 

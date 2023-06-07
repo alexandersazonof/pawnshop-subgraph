@@ -16,8 +16,8 @@ type PositionEntity @entity {
   minAuctionAmount: BigInt!
   open: Boolean!
   info: PositionInfoEntity
-  collateral: PositionCollateralEntity
-  acquired: PositionAcquiredEntity
+  collateral: PositionCollateralEntity!
+  acquired: PositionAcquiredEntity!
   execution: PositionExecutionEntity
 
   type: PositionType!
@@ -81,6 +81,7 @@ type TokenEntity @entity {
   contractAddress: String
   totalSupply: BigInt
   tokenId: BigInt
+  price: BigDecimal
 }
 
 type BidEntity @entity {

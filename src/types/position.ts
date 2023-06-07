@@ -4,9 +4,9 @@ import {
   PositionEntity, PositionExecutionEntity,
   PositionInfoEntity,
 } from '../../generated/schema';
-import { BigInt, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
 import { getPosition } from '../utils/pawn-shop.contract';
-import { loadOrCreateErc721Token, loadOrCreateErc20Token } from './token';
+import { loadOrCreateErc721Token, loadOrCreateErc20Token, updateTokenPrice } from './token';
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
@@ -109,4 +109,19 @@ export function toPositionType(position: PawnShopContract__getPositionResultValu
   }
 
   return 'Loan';
+}
+
+export function updatePositionPrice(position: PositionEntity): void {
+  if (position.collateral != null) {
+    const collateral = PositionCollateralEntity.load(position.collateral);
+    if (collateral && collateral.collateralToken && collateral.collateralType != 1) {
+      updateTokenPrice(Address.fromString(collateral.collateralToken))
+    }
+  }
+  if (position.acquired != null) {
+    const acquired = PositionAcquiredEntity.load(position.acquired);
+    if (acquired && acquired.acquiredToken) {
+      updateTokenPrice(Address.fromString(acquired.acquiredToken))
+    }
+  }
 }
