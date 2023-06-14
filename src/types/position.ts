@@ -112,7 +112,7 @@ export function toPositionType(position: PawnShopContract__getPositionResultValu
     && position.acquired.acquiredAmount.gt(BigInt.zero())
   ) {
     return 'Sale';
-  } else if (position.info.posDurationBlocks.gt(BigInt.zero()) && position.minAuctionAmount.isZero()) {
+  } else if (position.info.posDurationBlocks.gt(BigInt.zero()) && position.acquired.acquiredAmount.isZero()) {
     return 'LoanAuction';
   }
 
