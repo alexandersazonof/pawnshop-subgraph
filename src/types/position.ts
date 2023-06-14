@@ -100,11 +100,19 @@ export function toPositionExecutionEntity(posId: string, position: PawnShopContr
 }
 
 export function toPositionType(position: PawnShopContract__getPositionResultValue0Struct): string {
-  if (position.info.posDurationBlocks.isZero() && position.minAuctionAmount.gt(BigInt.zero())) {
+  if (
+    position.info.posDurationBlocks.isZero()
+    && position.minAuctionAmount.isZero()
+    && position.acquired.acquiredAmount.isZero()
+  ) {
     return 'Auction';
-  } else if (position.info.posDurationBlocks.isZero() && position.minAuctionAmount.isZero()) {
+  } else if (
+    position.info.posDurationBlocks.isZero()
+    && position.minAuctionAmount.isZero()
+    && position.acquired.acquiredAmount.gt(BigInt.zero())
+  ) {
     return 'Sale';
-  } else if (position.info.posDurationBlocks.gt(BigInt.zero()) && position.minAuctionAmount.gt(BigInt.zero())) {
+  } else if (position.info.posDurationBlocks.gt(BigInt.zero()) && position.minAuctionAmount.isZero()) {
     return 'LoanAuction';
   }
 
