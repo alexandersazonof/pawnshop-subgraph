@@ -21,7 +21,7 @@ export function handlePositionOpened(event: PositionOpened): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'OPEN_POSITION', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'OPEN_POSITION', event.block, event.transaction);
   }
 }
 
@@ -29,7 +29,7 @@ export function handlePositionClosed(event: PositionClosed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'CLOSE_POSITION', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'CLOSE_POSITION', event.block, event.transaction);
     position.open = false;
     position.save();
     updatePositionPrice(position);
@@ -40,7 +40,7 @@ export function handleAuctionBidOpened(event: AuctionBidOpened): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'BID_OPEN', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'BID_OPEN', event.block, event.transaction);
     const bid = loadOrCreateBid(event.params.bidId, event.block);
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
@@ -53,7 +53,7 @@ export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'BID_ACCEPT', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'BID_ACCEPT', event.block, event.transaction);
     const bid = loadOrCreateBid(event.params.bidId, event.block);
     if (bid) {
       bid.open = false;
@@ -70,7 +70,7 @@ export function handleAuctionBidClosed(event: AuctionBidClosed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'BID_CLOSE', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'BID_CLOSE', event.block, event.transaction);
     const bid = loadOrCreateBid(event.params.bidId, event.block);
     if (bid) {
       bid.open = false;
@@ -87,7 +87,7 @@ export function handleBidExecuted(event: BidExecuted): void {
   const pawnShop = loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'BID_EXECUTE', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction);
     position.open = false;
     position.save();
     const bid = loadOrCreateBid(event.params.bidId, event.block);
@@ -118,7 +118,7 @@ export function handlePositionClaimed(event: PositionClaimed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'CLAIM_POSITION', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'CLAIM_POSITION', event.block, event.transaction);
     position.open = false;
     position.save();
     const execution = PositionExecutionEntity.load(position.id);
@@ -134,7 +134,7 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
-    loadOrCreatePositionAction(position.id, 'REDEEM_POSITION', event.block, event.transaction);
+    loadOrCreatePositionAction(position, 'REDEEM_POSITION', event.block, event.transaction);
     position.open = false;
     position.save();
     const execution = PositionExecutionEntity.load(position.id);

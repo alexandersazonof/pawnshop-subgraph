@@ -1,16 +1,24 @@
 import { ethereum } from '@graphprotocol/graph-ts';
-import { PositionActionEntity } from '../../generated/schema';
+import { PositionActionEntity, PositionCollateralEntity, PositionEntity } from '../../generated/schema';
+import { toPositionCollateral } from './position';
 
-export function loadOrCreatePositionAction(posId: string, action: string, block: ethereum.Block, tx: ethereum.Transaction): PositionActionEntity {
-  const id = `${posId}-${tx.hash.toHex()}`
+export function loadOrCreatePositionAction(position: PositionEntity, action: string, block: ethereum.Block, tx: ethereum.Transaction): PositionActionEntity {
+  const id = `${position.id}-${tx.hash.toHex()}`
   let positionAction = PositionActionEntity.load(id)
   if (!positionAction) {
     positionAction = new PositionActionEntity(id);
 
+    let collateral = PositionCollateralEntity.load(position.collateral)
+
+
     positionAction.action = action;
-    positionAction.position = posId;
+    positionAction.position = position.id;
     positionAction.createAtBlock = block.number
     positionAction.timestamp = block.timestamp
+
+    if (collateral) {
+      positionAction.collateralToken = collateral.collateralToken;
+    }
 
     positionAction.save();
   }

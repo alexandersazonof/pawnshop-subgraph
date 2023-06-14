@@ -65,6 +65,7 @@ type PositionActionEntity @entity {
 
   position: PositionEntity!
   action: ActionType!
+  collateralToken: TokenEntity
 
   timestamp: BigInt!
   createAtBlock: BigInt!
