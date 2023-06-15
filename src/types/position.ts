@@ -2,12 +2,14 @@ import {
   PositionAcquiredEntity,
   PositionCollateralEntity,
   PositionEntity, PositionExecutionEntity,
-  PositionInfoEntity,
+  PositionInfoEntity, TokenEntity,
 } from '../../generated/schema';
-import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
 import { getPosition } from '../utils/pawn-shop.contract';
 import { loadOrCreateErc721Token, loadOrCreateErc20Token, updateTokenPrice } from './token';
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
+import { pow } from '../utils/math';
+import { BD_TEN } from '../utils/constant';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
   const id = `${posId.toString()}`;
@@ -32,6 +34,22 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
 
       position.createAtBlock = block.number;
       position.timestamp = block.timestamp;
+      position.startPrice = BigDecimal.zero();
+
+      let acquired = PositionAcquiredEntity.load(position.acquired)
+      if (acquired) {
+        let acquiredToken = TokenEntity.load(acquired.acquiredToken)
+        if (acquiredToken && acquiredToken.price) {
+          if (position.minAuctionAmount.gt(BigInt.zero())) {
+            position.startPrice = position.minAuctionAmount.divDecimal(pow(BD_TEN, acquiredToken.decimals))
+              .times(acquiredToken.price!)
+          } else {
+            position.startPrice = acquired.acquiredAmount.divDecimal(pow(BD_TEN, acquiredToken.decimals))
+              .times(acquiredToken.price!)
+          }
+        }
+      }
+
       position.save();
     } else {
       log.warning("CAN NOT GET POSITION BY ID: {}", [posId.toString()]);
@@ -93,9 +111,14 @@ export function toPositionExecutionEntity(posId: string, position: PawnShopContr
     execution.posStartBlock = position.execution.posStartBlock;
     execution.posStartTs = position.execution.posStartTs;
     execution.posEndTs = position.execution.posEndTs;
-
-    execution.save();
+  } else {
+    execution.lender = position.execution.lender.toHex();
+    execution.posStartBlock = position.execution.posStartBlock;
+    execution.posStartTs = position.execution.posStartTs;
+    execution.posEndTs = position.execution.posEndTs;
   }
+  execution.save();
+
   return execution;
 }
 
@@ -132,4 +155,15 @@ export function updatePositionPrice(position: PositionEntity): void {
       updateTokenPrice(Address.fromString(acquired.acquiredToken))
     }
   }
+}
+
+export function updatePositionInfo(id: BigInt, block: ethereum.Block): PositionEntity | null {
+  const position = loadOrCreatePosition(id, block);
+  const positionResult = getPosition(id);
+  if (position && positionResult) {
+    position.execution = toPositionExecutionEntity(position.id, positionResult).id;
+    position.open = positionResult.open;
+    position.save()
+  }
+  return position;
 }

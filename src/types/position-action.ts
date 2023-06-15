@@ -10,7 +10,7 @@ export function loadOrCreatePositionAction(position: PositionEntity, action: str
 
     let collateral = PositionCollateralEntity.load(position.collateral)
 
-
+    positionAction.tx = tx.hash.toHex();
     positionAction.action = action;
     positionAction.position = position.id;
     positionAction.createAtBlock = block.number

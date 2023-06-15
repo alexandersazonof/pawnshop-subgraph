@@ -8,7 +8,12 @@ import {
   PositionOpened,
   PositionRedeemed,
 } from '../generated/PawnShopContract/PawnShopContract';
-import { loadOrCreatePosition, toPositionExecutionEntity, updatePositionPrice } from './types/position';
+import {
+  loadOrCreatePosition,
+  toPositionExecutionEntity,
+  updatePositionInfo,
+  updatePositionPrice,
+} from './types/position';
 import { loadOrCreatePositionAction } from './types/position-action';
 import { loadOrCreateBid } from './types/bid';
 import { loadOrCreateBidAction } from './types/bid-action';
@@ -88,8 +93,6 @@ export function handleBidExecuted(event: BidExecuted): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction);
-    position.open = false;
-    position.save();
     const bid = loadOrCreateBid(event.params.bidId, event.block);
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
@@ -100,16 +103,7 @@ export function handleBidExecuted(event: BidExecuted): void {
       const feeAmount = event.params.amount.times(pawnShop.platformFee).div(DENOMINATOR);
       addFeeAmount(position.id, feeAmount, event.block);
     }
-    const info = PositionInfoEntity.load(position.id)
-    if (info && info.posDurationBlocks.isZero()) {
-      position.open = false;
-      position.save();
-      const execution = PositionExecutionEntity.load(position.id);
-      if (execution) {
-        execution.posEndTs = event.block.timestamp;
-        execution.save();
-      }
-    }
+    updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);
   }
 }
@@ -119,13 +113,7 @@ export function handlePositionClaimed(event: PositionClaimed): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position, 'CLAIM_POSITION', event.block, event.transaction);
-    position.open = false;
-    position.save();
-    const execution = PositionExecutionEntity.load(position.id);
-    if (execution) {
-      execution.posEndTs = event.block.timestamp;
-      execution.save();
-    }
+    updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);
   }
 }
@@ -135,13 +123,7 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
     loadOrCreatePositionAction(position, 'REDEEM_POSITION', event.block, event.transaction);
-    position.open = false;
-    position.save();
-    const execution = PositionExecutionEntity.load(position.id);
-    if (execution) {
-      execution.posEndTs = event.block.timestamp;
-      execution.save();
-    }
+    updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);
   }
 }
