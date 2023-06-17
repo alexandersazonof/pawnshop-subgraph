@@ -43,6 +43,7 @@ type PositionCollateralEntity @entity {
   collateralToken: TokenEntity!
   collateralType: Int!
   collateralAmount: BigInt!
+  tokenName: String
   tokenId: BigInt!
 }
 

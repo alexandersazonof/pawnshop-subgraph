@@ -77,14 +77,15 @@ export function toPositionCollateral(posId: string, position: PawnShopContract__
   let collateral = PositionCollateralEntity.load(posId);
   if (!collateral) {
     const token = position.collateral.collateralType == 1
-      ? loadOrCreateErc721Token(position.collateral.collateralToken, position.collateral.collateralTokenId).id
-      : loadOrCreateErc20Token(position.collateral.collateralToken).id;
+      ? loadOrCreateErc721Token(position.collateral.collateralToken, position.collateral.collateralTokenId)
+      : loadOrCreateErc20Token(position.collateral.collateralToken);
 
     collateral = new PositionCollateralEntity(posId);
-    collateral.collateralToken = token
+    collateral.collateralToken = token.id
     collateral.collateralType = position.collateral.collateralType;
     collateral.collateralAmount = position.collateral.collateralAmount;
     collateral.tokenId = position.collateral.collateralTokenId;
+    collateral.tokenName = token.name
 
     collateral.save();
   }
