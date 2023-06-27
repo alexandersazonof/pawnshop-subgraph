@@ -87,6 +87,14 @@ type TokenEntity @entity {
   totalSupply: BigInt
   tokenId: BigInt
   price: BigDecimal
+  collection: CollectionEntity
+}
+
+type CollectionEntity @entity {
+  id: ID!
+  name: String
+  symbol: String
+  totalSupply: BigInt!
 }
 
 type BidEntity @entity {

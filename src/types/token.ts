@@ -4,6 +4,7 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { BD_18, DEFAULT_DECIMALS_NUM } from '../utils/constant';
 import { fetchTokenUri } from '../utils/erc721';
 import { getPrice } from '../utils/price-utils';
+import { loadOrCreateCollection } from './collection';
 
 export function loadOrCreateErc20Token(address: Address): TokenEntity {
   let token = TokenEntity.load(address.toHex());
@@ -33,6 +34,7 @@ export function loadOrCreateErc721Token(address: Address, tokenId: BigInt): Toke
     token.tokenId = tokenId;
     token.contractAddress = address.toHex()
     token.price = BigDecimal.zero();
+    token.collection = loadOrCreateCollection(address).id
     token.save()
   }
   return token;
