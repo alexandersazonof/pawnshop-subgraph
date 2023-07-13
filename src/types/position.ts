@@ -126,8 +126,8 @@ export function toPositionExecutionEntity(posId: string, position: PawnShopContr
 export function toPositionType(position: PawnShopContract__getPositionResultValue0Struct): string {
   if (
     position.info.posDurationBlocks.isZero()
-    && position.minAuctionAmount.isZero()
     && position.acquired.acquiredAmount.isZero()
+    && position.minAuctionAmount.gt(BigInt.zero())
   ) {
     return 'Auction';
   } else if (
