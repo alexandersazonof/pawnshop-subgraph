@@ -18,7 +18,7 @@ import { loadOrCreatePositionAction } from './types/position-action';
 import { loadOrCreateBid } from './types/bid';
 import { loadOrCreateBidAction } from './types/bid-action';
 import { loadOrCreatePawnshop } from './types/pawnshop';
-import { DENOMINATOR } from './utils/constant';
+import { DENOMINATOR, ZERO_ADDRESS } from './utils/constant';
 import {
   PlaftformFeeHistoryEntity,
   PositionAcquiredEntity,
@@ -122,20 +122,17 @@ export function handleBidExecuted(event: BidExecuted): void {
   if (position) {
     const bid = loadOrCreateBid(event.params.bidId, event.block);
     let price: BigInt | null = null;
-    let to: string | null = null;
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
       bidAction.action = 'BID_EXECUTE';
       bidAction.save();
-
-      to = bid.lender;
       price = bid.amount;
 
       // FEE AMOUNT
       const feeAmount = event.params.amount.times(pawnShop.platformFee).div(DENOMINATOR);
       addFeeAmount(position.id, feeAmount, event.block);
     }
-    loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction, price, position.borrower, to);
+    loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction, price, position.borrower, event.params.lender.toHexString());
     updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);
   }
