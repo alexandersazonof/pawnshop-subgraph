@@ -9,7 +9,7 @@ export const DEFAULT_VALUE = 'undefined';
 export const DENOMINATOR = BigInt.fromString('10000');
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const BD_18 = BigDecimal.fromString('1000000000000000000');
-
+export const POLYGON_BLOCKS_DAY = BigDecimal.fromString('43200');
 export const BD_TEN = BigDecimal.fromString('10');
 
 export enum ActionType {

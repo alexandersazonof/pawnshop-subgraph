@@ -9,7 +9,7 @@ import { getPosition } from '../utils/pawn-shop.contract';
 import { loadOrCreateErc721Token, loadOrCreateErc20Token, updateTokenPrice } from './token';
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
 import { pow } from '../utils/math';
-import { BD_TEN } from '../utils/constant';
+import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
   const id = `${posId.toString()}`;
@@ -48,6 +48,10 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
               .times(acquiredToken.price!)
           }
         }
+      }
+
+      if (position.type === 'Loan') {
+        position.apr = calculateApr(position);
       }
 
       position.save();
@@ -167,4 +171,16 @@ export function updatePositionInfo(id: BigInt, block: ethereum.Block): PositionE
     position.save()
   }
   return position;
+}
+
+export function calculateApr(position: PositionEntity): BigDecimal {
+  const info = PositionInfoEntity.load(position.id);
+  if (info) {
+    const days = BigDecimal.fromString('365').div(
+      info.posDurationBlocks.divDecimal(POLYGON_BLOCKS_DAY)
+    )
+    return info.posFee.divDecimal(BigDecimal.fromString('100'))
+      .div(days)
+  }
+  return BigDecimal.zero();
 }
