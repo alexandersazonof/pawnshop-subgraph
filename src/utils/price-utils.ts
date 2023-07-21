@@ -3,5 +3,6 @@ import { PriceCalculator } from '../../generated/PawnShopContract/PriceCalculato
 import { PRICE_CALCULATOR } from './constant';
 
 export function getPrice(address: Address): BigInt {
-  return PriceCalculator.bind(PRICE_CALCULATOR).getPriceWithDefaultOutput(address);
+  const tryVal = PriceCalculator.bind(PRICE_CALCULATOR).try_getPriceWithDefaultOutput(address);
+  return tryVal.reverted ? BigInt.zero() : tryVal.value;
 }

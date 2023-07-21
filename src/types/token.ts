@@ -15,7 +15,12 @@ export function loadOrCreateErc20Token(address: Address): TokenEntity {
     token.symbol = fetchSymbol(address);
     token.totalSupply = fetchTotalSupply(address);
     token.isErc721 = false;
-    token.price = BigDecimal.zero();
+    const price = getPrice(address);
+    if (!price.isZero()) {
+      token.price = price.divDecimal(BD_18);
+    } else {
+      token.price = BigDecimal.zero();
+    }
     token.save()
   }
   return token;
