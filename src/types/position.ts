@@ -10,6 +10,7 @@ import { loadOrCreateErc721Token, loadOrCreateErc20Token, updateTokenPrice } fro
 import { PawnShopContract__getPositionResultValue0Struct } from '../../generated/PawnShopContract/PawnShopContract';
 import { pow } from '../utils/math';
 import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
+import { loadOrCreateCollection } from './collection';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
   const id = `${posId.toString()}`;
@@ -31,6 +32,7 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): Posi
       position.execution = toPositionExecutionEntity(id, positionResult).id;
 
       position.type = toPositionType(positionResult);
+      position.status = 'Active';
 
       position.createAtBlock = block.number;
       position.timestamp = block.timestamp;
@@ -90,6 +92,9 @@ export function toPositionCollateral(posId: string, position: PawnShopContract__
     collateral.collateralAmount = position.collateral.collateralAmount;
     collateral.tokenId = position.collateral.collateralTokenId;
     collateral.tokenName = token.name
+    if (token.collection) {
+      collateral.collectionName = loadOrCreateCollection(position.collateral.collateralToken).name
+    }
 
     collateral.save();
   }

@@ -52,6 +52,7 @@ export function handlePositionClosed(event: PositionClosed): void {
   if (position) {
     loadOrCreatePositionAction(position, 'CLOSE_POSITION', event.block, event.transaction, null, position.borrower, null);
     position.open = false;
+    position.status = 'Close';
     position.save();
     updatePositionPrice(position);
   }
@@ -127,6 +128,8 @@ export function handleBidExecuted(event: BidExecuted): void {
       bidAction.action = 'BID_EXECUTE';
       bidAction.save();
       price = bid.amount;
+      position.status = 'Execute';
+      position.save();
 
       // FEE AMOUNT
       const feeAmount = event.params.amount.times(pawnShop.platformFee).div(DENOMINATOR);
@@ -142,6 +145,9 @@ export function handlePositionClaimed(event: PositionClaimed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
+    position.open = false;
+    position.status = 'Close';
+    position.save();
     loadOrCreatePositionAction(position, 'CLAIM_POSITION', event.block, event.transaction, null, event.params.sender.toHex(), position.borrower);
     updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);
@@ -152,6 +158,9 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
   loadOrCreatePawnshop(event.address, event.block);
   const position = loadOrCreatePosition(event.params.posId, event.block);
   if (position) {
+    position.open = false;
+    position.status = 'Close';
+    position.save();
     loadOrCreatePositionAction(position, 'REDEEM_POSITION', event.block, event.transaction, null, event.params.sender.toHex(), null);
     updatePositionInfo(event.params.posId, event.block);
     updatePositionPrice(position);

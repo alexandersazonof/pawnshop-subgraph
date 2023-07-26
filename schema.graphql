@@ -25,6 +25,7 @@ type PositionEntity @entity {
   startPrice: BigDecimal!
 
   type: PositionType!
+  status: PositionStatus!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -46,6 +47,7 @@ type PositionCollateralEntity @entity {
   collateralType: Int!
   collateralAmount: BigInt!
   tokenName: String
+  collectionName: String
   tokenId: BigInt!
 }
 
@@ -140,6 +142,12 @@ enum PositionType {
   Auction,
   Loan,
   LoanAuction
+}
+
+enum PositionStatus {
+  Active,
+  Execute,
+  Close
 }
 
 type FeeEarnedEntity @entity {
