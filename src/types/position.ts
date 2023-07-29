@@ -13,6 +13,9 @@ import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
 import { loadOrCreateCollection } from './collection';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
+  if (posId.isZero()) {
+    return null;
+  }
   const id = `${posId.toString()}`;
   let position = PositionEntity.load(id)
   if (!position) {
