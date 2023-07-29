@@ -1,7 +1,8 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { dataSource } from '@graphprotocol/graph-ts'
 
-export const PAWN_SHOP_CONTRACT = Address.fromString('0xdeabad6cf2ffc7357651d0c52739536e89870532');
-export const PRICE_CALCULATOR = Address.fromString('0x0B62ad43837A69Ad60289EEea7C6e907e759F6E8');
+export const MATIC_PAWN_SHOP_CONTRACT = Address.fromString('0x0c9FA52D7Ed12a6316d3738c80931eCbC6C49907');
+export const MATIC_PRICE_CALCULATOR = Address.fromString('0x0B62ad43837A69Ad60289EEea7C6e907e759F6E8');
 
 export const DEFAULT_DECIMALS = BigInt.fromI32(18);
 export const DEFAULT_DECIMALS_NUM = 18;
@@ -21,4 +22,18 @@ export enum ActionType {
   BID_CLOSE,
   BID_OPEN,
   BID_EXECUTE,
+}
+
+export function getPawnshopContractAddress(): Address {
+  if (dataSource.network() == 'matic') {
+    return MATIC_PAWN_SHOP_CONTRACT;
+  }
+  return MATIC_PAWN_SHOP_CONTRACT;
+}
+
+export function getPriceAddress(): Address {
+  if (dataSource.network() == 'matic') {
+    return MATIC_PRICE_CALCULATOR;
+  }
+  return MATIC_PRICE_CALCULATOR;
 }

@@ -92,6 +92,7 @@ export function toPositionCollateral(posId: string, position: PawnShopContract__
     collateral.collateralAmount = position.collateral.collateralAmount;
     collateral.tokenId = position.collateral.collateralTokenId;
     collateral.tokenName = token.name
+    collateral.tokenSymbol = token.symbol
     if (token.collection) {
       collateral.collectionName = loadOrCreateCollection(position.collateral.collateralToken).name
     }
@@ -104,9 +105,12 @@ export function toPositionCollateral(posId: string, position: PawnShopContract__
 export function toPositionAcquiredEntity(posId: string, position: PawnShopContract__getPositionResultValue0Struct): PositionAcquiredEntity {
   let acquired = PositionAcquiredEntity.load(posId);
   if (!acquired) {
+    const token = loadOrCreateErc20Token(position.acquired.acquiredToken)
     acquired = new PositionAcquiredEntity(posId);
-    acquired.acquiredToken = loadOrCreateErc20Token(position.acquired.acquiredToken).id;
+    acquired.acquiredToken = token.id;
     acquired.acquiredAmount = position.acquired.acquiredAmount;
+    acquired.tokenName = token.name;
+    acquired.tokenSymbol = token.symbol;
 
     acquired.save();
   }

@@ -6,9 +6,9 @@ dataSources:
     name: PawnShopContract
     network: matic
     source:
-      address: "0xdeabad6cf2ffc7357651d0c52739536e89870532"
+      address: "0x0c9FA52D7Ed12a6316d3738c80931eCbC6C49907"
       abi: PawnShopContract
-      startBlock: 42660968
+      startBlock: 45492577
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
