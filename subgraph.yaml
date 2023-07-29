@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0x0c9FA52D7Ed12a6316d3738c80931eCbC6C49907"
       abi: PawnShopContract
-      startBlock: 45492577
+      startBlock: 45492576
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
