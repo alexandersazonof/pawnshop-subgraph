@@ -12,11 +12,11 @@ import { pow } from '../utils/math';
 import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
 import { loadOrCreateCollection } from './collection';
 
-export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block): PositionEntity | null {
+export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawnshopAdr: Address): PositionEntity | null {
   const id = `${posId.toString()}`;
   let position = PositionEntity.load(id)
   if (!position) {
-    const positionResult = getPosition(posId);
+    const positionResult = getPosition(posId, pawnshopAdr);
     if (positionResult != null) {
       position = new PositionEntity(id);
 
@@ -171,9 +171,9 @@ export function updatePositionPrice(position: PositionEntity): void {
   }
 }
 
-export function updatePositionInfo(id: BigInt, block: ethereum.Block): PositionEntity | null {
-  const position = loadOrCreatePosition(id, block);
-  const positionResult = getPosition(id);
+export function updatePositionInfo(id: BigInt, block: ethereum.Block, pawnshopAdr: Address): PositionEntity | null {
+  const position = loadOrCreatePosition(id, block, pawnshopAdr);
+  const positionResult = getPosition(id, pawnshopAdr);
   if (position && positionResult) {
     position.execution = toPositionExecutionEntity(position.id, positionResult).id;
     position.open = positionResult.open;

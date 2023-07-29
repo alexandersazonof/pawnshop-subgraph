@@ -30,7 +30,7 @@ import { BigInt } from '@graphprotocol/graph-ts';
 
 export function handlePositionOpened(event: PositionOpened): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
     let price: BigInt | null = null;
     if (position.type === 'LoanAuction' || position.type === 'Auction') {
@@ -48,7 +48,7 @@ export function handlePositionOpened(event: PositionOpened): void {
 
 export function handlePositionClosed(event: PositionClosed): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
     loadOrCreatePositionAction(position, 'CLOSE_POSITION', event.block, event.transaction, null, position.borrower, null);
     position.open = false;
@@ -60,11 +60,11 @@ export function handlePositionClosed(event: PositionClosed): void {
 
 export function handleAuctionBidOpened(event: AuctionBidOpened): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
     let from: string | null = null;
     let price: BigInt | null = null;
-    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    const bid = loadOrCreateBid(event.params.bidId, event.block, event.address);
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
       from = bid.lender;
@@ -77,9 +77,9 @@ export function handleAuctionBidOpened(event: AuctionBidOpened): void {
 
 export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
-    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    const bid = loadOrCreateBid(event.params.bidId, event.block, event.address);
     let to: string | null = null;
     let price: BigInt | null = null;
     if (bid) {
@@ -98,9 +98,9 @@ export function handleAuctionBidAccepted(event: AuctionBidAccepted): void {
 
 export function handleAuctionBidClosed(event: AuctionBidClosed): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
-    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    const bid = loadOrCreateBid(event.params.bidId, event.block, event.address);
     let from: string | null = null;
     let price: BigInt | null = null;
     if (bid) {
@@ -119,9 +119,9 @@ export function handleAuctionBidClosed(event: AuctionBidClosed): void {
 
 export function handleBidExecuted(event: BidExecuted): void {
   const pawnShop = loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
-    const bid = loadOrCreateBid(event.params.bidId, event.block);
+    const bid = loadOrCreateBid(event.params.bidId, event.block, event.address);
     let price: BigInt | null = null;
     if (bid) {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
@@ -136,33 +136,33 @@ export function handleBidExecuted(event: BidExecuted): void {
       addFeeAmount(position.id, feeAmount, event.block);
     }
     loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction, price, position.borrower, event.params.lender.toHexString());
-    updatePositionInfo(event.params.posId, event.block);
+    updatePositionInfo(event.params.posId, event.block, event.address);
     updatePositionPrice(position);
   }
 }
 
 export function handlePositionClaimed(event: PositionClaimed): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
     position.open = false;
     position.status = 'Close';
     position.save();
     loadOrCreatePositionAction(position, 'CLAIM_POSITION', event.block, event.transaction, null, event.params.sender.toHex(), position.borrower);
-    updatePositionInfo(event.params.posId, event.block);
+    updatePositionInfo(event.params.posId, event.block, event.address);
     updatePositionPrice(position);
   }
 }
 
 export function handlePositionRedeemed(event: PositionRedeemed): void {
   loadOrCreatePawnshop(event.address, event.block);
-  const position = loadOrCreatePosition(event.params.posId, event.block);
+  const position = loadOrCreatePosition(event.params.posId, event.block, event.address);
   if (position) {
     position.open = false;
     position.status = 'Close';
     position.save();
     loadOrCreatePositionAction(position, 'REDEEM_POSITION', event.block, event.transaction, null, event.params.sender.toHex(), null);
-    updatePositionInfo(event.params.posId, event.block);
+    updatePositionInfo(event.params.posId, event.block, event.address);
     updatePositionPrice(position);
   }
 }
