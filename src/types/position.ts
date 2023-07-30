@@ -23,6 +23,7 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawns
     if (positionResult != null) {
       position = new PositionEntity(id);
 
+
       position.borrower = positionResult.borrower.toHex()
       position.minAuctionAmount = positionResult.minAuctionAmount
       position.depositToken = loadOrCreateErc20Token(positionResult.depositToken).id
