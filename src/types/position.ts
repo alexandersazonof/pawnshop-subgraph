@@ -13,12 +13,16 @@ import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
 import { loadOrCreateCollection } from './collection';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawnshopAdr: Address): PositionEntity | null {
+  if (posId.isZero()) {
+    return null;
+  }
   const id = `${posId.toString()}`;
   let position = PositionEntity.load(id)
   if (!position) {
     const positionResult = getPosition(posId, pawnshopAdr);
     if (positionResult != null) {
       position = new PositionEntity(id);
+
 
       position.borrower = positionResult.borrower.toHex()
       position.minAuctionAmount = positionResult.minAuctionAmount

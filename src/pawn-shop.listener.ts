@@ -128,13 +128,13 @@ export function handleBidExecuted(event: BidExecuted): void {
       bidAction.action = 'BID_EXECUTE';
       bidAction.save();
       price = bid.amount;
-      position.status = 'Execute';
-      position.save();
 
       // FEE AMOUNT
       const feeAmount = event.params.amount.times(pawnShop.platformFee).div(DENOMINATOR);
       addFeeAmount(position.id, feeAmount, event.block);
     }
+    position.status = 'Execute';
+    position.save();
     loadOrCreatePositionAction(position, 'BID_EXECUTE', event.block, event.transaction, price, position.borrower, event.params.lender.toHexString());
     updatePositionInfo(event.params.posId, event.block, event.address);
     updatePositionPrice(position);
@@ -168,7 +168,7 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
 }
 
 export function handlePlatformFeeChanged(event: PlatformFeeChanged): void {
-  const pawnshop =loadOrCreatePawnshop(event.address, event.block);
+  const pawnshop = loadOrCreatePawnshop(event.address, event.block);
   if (pawnshop) {
     pawnshop.platformFee = event.params.newFee;
     pawnshop.save();
