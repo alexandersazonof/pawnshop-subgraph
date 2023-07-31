@@ -2,7 +2,7 @@ import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { dataSource } from '@graphprotocol/graph-ts'
 
 export const MATIC_PRICE_CALCULATOR = Address.fromString('0x0B62ad43837A69Ad60289EEea7C6e907e759F6E8');
-
+export const CONST_ID = '1';
 export const DEFAULT_DECIMALS = BigInt.fromI32(18);
 export const DEFAULT_DECIMALS_NUM = 18;
 export const DEFAULT_VALUE = 'undefined';

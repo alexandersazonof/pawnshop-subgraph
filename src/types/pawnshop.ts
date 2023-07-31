@@ -10,6 +10,7 @@ export function loadOrCreatePawnshop(address: Address, block: ethereum.Block): P
 
     pawnshop.feeRecipient = feeRecipient(address).toHex();
     pawnshop.platformFee = platformFee(address);
+    pawnshop.positionDepositAmount = positionDepositAmount(address);
 
     pawnshop.createAtBlock = block.number
     pawnshop.timestamp = block.timestamp
@@ -27,4 +28,10 @@ export function feeRecipient(address: Address): Address {
   const contract = PawnShopContract.bind(address);
   const tryFeeRecipient = contract.try_feeRecipient();
   return tryFeeRecipient.reverted ? Address.zero() : tryFeeRecipient.value;
+}
+
+export function positionDepositAmount(address: Address): BigInt {
+  const contract = PawnShopContract.bind(address);
+  const tryPositionDepositAmount = contract.try_positionDepositAmount();
+  return tryPositionDepositAmount.reverted ? BigInt.zero() : tryPositionDepositAmount.value;
 }
