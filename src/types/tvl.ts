@@ -50,7 +50,7 @@ export function updateTvl(position: PositionEntity, block: ethereum.Block): void
         // deposit token logic
         if (pawnshop && depositToken) {
           if (depositToken.price) {
-            depositTokenValue = formatUnits(pawnshop.positionDepositAmount, depositToken.decimals).times(depositToken.price!)
+            depositTokenValue = depositTokenValue.plus(formatUnits(pawnshop.positionDepositAmount, depositToken.decimals).times(depositToken.price!))
           }
         }
       }
