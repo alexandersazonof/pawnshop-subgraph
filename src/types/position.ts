@@ -11,6 +11,7 @@ import { PawnShopContract__getPositionResultValue0Struct } from '../../generated
 import { pow } from '../utils/math';
 import { BD_TEN, POLYGON_BLOCKS_DAY } from '../utils/constant';
 import { loadOrCreateCollection } from './collection';
+import { loadOrCreatePawnshop } from './pawnshop';
 
 export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawnshopAdr: Address): PositionEntity | null {
   if (posId.isZero()) {
@@ -37,6 +38,7 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawns
 
       position.type = toPositionType(positionResult);
       position.status = 'Active';
+      position.pawnshop = loadOrCreatePawnshop(pawnshopAdr, block).id;
 
       position.createAtBlock = block.number;
       position.timestamp = block.timestamp;

@@ -27,6 +27,7 @@ import {
 } from '../generated/schema';
 import { addFeeAmount } from './types/fee-amount';
 import { BigInt } from '@graphprotocol/graph-ts';
+import { updateTvl } from './types/tvl';
 
 export function handlePositionOpened(event: PositionOpened): void {
   loadOrCreatePawnshop(event.address, event.block);
@@ -42,6 +43,7 @@ export function handlePositionOpened(event: PositionOpened): void {
       }
     }
 
+    updateTvl(position, event.block);
     loadOrCreatePositionAction(position, 'OPEN_POSITION', event.block, event.transaction, price, position.borrower, null);
   }
 }
@@ -55,6 +57,7 @@ export function handlePositionClosed(event: PositionClosed): void {
     position.status = 'Close';
     position.save();
     updatePositionPrice(position);
+    updateTvl(position, event.block);
   }
 }
 
@@ -164,6 +167,7 @@ export function handlePositionRedeemed(event: PositionRedeemed): void {
     loadOrCreatePositionAction(position, 'REDEEM_POSITION', event.block, event.transaction, null, event.params.sender.toHex(), null);
     updatePositionInfo(event.params.posId, event.block, event.address);
     updatePositionPrice(position);
+    updateTvl(position, event.block);
   }
 }
 

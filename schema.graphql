@@ -2,6 +2,7 @@ type PawnshopEntity @entity {
   id: ID!
   feeRecipient: String!
   platformFee: BigInt!
+  positionDepositAmount: BigInt!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -26,6 +27,7 @@ type PositionEntity @entity {
 
   type: PositionType!
   status: PositionStatus!
+  pawnshop: PawnshopEntity!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -175,6 +177,23 @@ type PlaftformFeeHistoryEntity @entity {
   newFee: BigInt!
   oldFee: BigInt!
 
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TvlEntity @entity {
+  id: ID!
+  value: BigDecimal!
+  collateralValue: BigDecimal!
+  depositTokenValue: BigDecimal!
+  activePositions: [PositionEntity!]
+}
+
+type TvlHistoryEntity @entity {
+  id: ID!
+  value: BigDecimal!
+  collateralValue: BigDecimal!
+  depositTokenValue: BigDecimal!
   timestamp: BigInt!
   createAtBlock: BigInt!
 }
