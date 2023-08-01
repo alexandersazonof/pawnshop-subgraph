@@ -72,6 +72,11 @@ export function handleAuctionBidOpened(event: AuctionBidOpened): void {
       const bidAction = loadOrCreateBidAction(bid.id, event.transaction, event.block);
       from = bid.lender;
       price = bid.amount;
+      let positionBids = position.bids;
+      positionBids.push(bid.id);
+      position.bids = positionBids;
+      position.save()
+      updateTvl(position, event.block);
     }
     loadOrCreatePositionAction(position, 'BID_OPEN', event.block, event.transaction, price, from, position.borrower);
     updatePositionPrice(position);

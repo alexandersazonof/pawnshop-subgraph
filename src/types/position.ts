@@ -39,6 +39,7 @@ export function loadOrCreatePosition(posId: BigInt, block: ethereum.Block, pawns
       position.type = toPositionType(positionResult);
       position.status = 'Active';
       position.pawnshop = loadOrCreatePawnshop(pawnshopAdr, block).id;
+      position.bids = [];
 
       position.createAtBlock = block.number;
       position.timestamp = block.timestamp;
