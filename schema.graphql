@@ -20,7 +20,7 @@ type PositionEntity @entity {
   collateral: PositionCollateralEntity!
   acquired: PositionAcquiredEntity!
   execution: PositionExecutionEntity
-  bids: [BidEntity!] @derivedFrom(field: "position")
+  bids: [BidEntity!]!
   apr: BigDecimal
 
   startPrice: BigDecimal!
@@ -185,6 +185,7 @@ type TvlEntity @entity {
   id: ID!
   value: BigDecimal!
   collateralValue: BigDecimal!
+  bidsValue: BigDecimal!
   depositTokenValue: BigDecimal!
   activePositions: [PositionEntity!]
 }
@@ -193,6 +194,7 @@ type TvlHistoryEntity @entity {
   id: ID!
   value: BigDecimal!
   collateralValue: BigDecimal!
+  bidsValue: BigDecimal!
   depositTokenValue: BigDecimal!
   timestamp: BigInt!
   createAtBlock: BigInt!
